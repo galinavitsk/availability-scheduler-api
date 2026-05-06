@@ -26,8 +26,9 @@ func NewPool(ctx context.Context) (*pgxpool.Pool, error) {
 }
 
 func RunMigrations() error {
-	// golang-migrate pgx/v5 driver is registered under the "pgx5" scheme
-	migrateDSN := strings.Replace(dsn(), "postgres://", "pgx5://", 1)
+	migrateDSN := dsn()
+	migrateDSN = strings.Replace(migrateDSN, "postgresql://", "pgx5://", 1)
+	migrateDSN = strings.Replace(migrateDSN, "postgres://", "pgx5://", 1)
 
 	m, err := migrate.New("file://migrations", migrateDSN)
 	if err != nil {
