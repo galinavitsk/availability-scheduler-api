@@ -32,9 +32,10 @@ func main() {
 	defer pool.Close()
 
 	sessionSvc := services.NewSessionService(postgres.NewSessionRepository(pool))
+	availabilitySvc := services.NewAvailabilityService(postgres.NewAvailabilityRepository(pool))
 
 	r := gin.Default()
-	handlers.RegisterRoutes(r, sessionSvc)
+	handlers.RegisterRoutes(r, sessionSvc, availabilitySvc)
 
 	log.Printf("Server starting on port %s", cfg.Port)
 	if err := r.Run(":" + cfg.Port); err != nil {

@@ -1,49 +1,83 @@
 basePath: /api/v1
 definitions:
-  models.CreateSessionRequest:
+  models.Availability:
     properties:
-      end_time:
+      heroClass:
+        type: string
+      id:
+        type: string
+      localTimezone:
         type: string
       name:
         type: string
-      selected_dates:
+      slotsByDate:
+        additionalProperties:
+          additionalProperties:
+            type: string
+          type: object
+        type: object
+      slug:
+        type: string
+    type: object
+  models.CreateAvailabilityRequest:
+    properties:
+      heroClass:
+        type: string
+      localTimezone:
+        type: string
+      name:
+        type: string
+      slotsByDate:
+        additionalProperties:
+          additionalProperties:
+            type: string
+          type: object
+        type: object
+    type: object
+  models.CreateSessionRequest:
+    properties:
+      endTime:
+        type: string
+      name:
+        type: string
+      selectedDates:
         items:
           type: string
         type: array
-      start_time:
+      startTime:
         type: string
-      time_zone:
+      timeZone:
         type: string
     required:
-    - end_time
+    - endTime
     - name
-    - start_time
-    - time_zone
+    - startTime
+    - timeZone
     type: object
   models.Session:
     properties:
-      end_time:
+      endTime:
         type: string
       id:
         type: string
       name:
         type: string
-      selected_dates:
+      selectedDates:
         items:
           type: string
         type: array
       slug:
         type: string
-      start_time:
+      startTime:
         type: string
-      time_zone:
+      timeZone:
         type: string
     type: object
   models.UpdateSessionRequest:
     properties:
-      end_time:
+      endTime:
         type: string
-      start_time:
+      startTime:
         type: string
     type: object
 host: localhost:8080
@@ -53,6 +87,39 @@ info:
   title: Availability Scheduler API
   version: "1.0"
 paths:
+  /availabilitys:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Availability to create
+        in: body
+        name: availability
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateAvailabilityRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Availability'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create a availability
+      tags:
+      - availabilitys
   /health:
     get:
       produces:
@@ -120,35 +187,6 @@ paths:
       summary: Delete a session
       tags:
       - sessions
-    get:
-      parameters:
-      - description: Session ID
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.Session'
-        "404":
-          description: Not Found
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-      summary: Get a session by ID
-      tags:
-      - sessions
     put:
       consumes:
       - application/json
@@ -190,6 +228,36 @@ paths:
               type: string
             type: object
       summary: Update a session
+      tags:
+      - sessions
+  /sessions/{slug}:
+    get:
+      parameters:
+      - description: Session Slug
+        in: path
+        name: slug
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Session'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get a session by Slug
       tags:
       - sessions
 swagger: "2.0"

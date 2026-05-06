@@ -15,6 +15,57 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/availabilitys": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "availabilitys"
+                ],
+                "summary": "Create a availability",
+                "parameters": [
+                    {
+                        "description": "Availability to create",
+                        "name": "availability",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CreateAvailabilityRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.Availability"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/health": {
             "get": {
                 "produces": [
@@ -89,50 +140,6 @@ const docTemplate = `{
             }
         },
         "/sessions/{id}": {
-            "get": {
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "sessions"
-                ],
-                "summary": "Get a session by ID",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Session ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.Session"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            },
             "put": {
                 "consumes": [
                     "application/json"
@@ -227,34 +234,132 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/sessions/{slug}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "sessions"
+                ],
+                "summary": "Get a session by Slug",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Session Slug",
+                        "name": "slug",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Session"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
-        "models.CreateSessionRequest": {
+        "models.Availability": {
             "type": "object",
-            "required": [
-                "end_time",
-                "name",
-                "start_time",
-                "time_zone"
-            ],
             "properties": {
-                "end_time": {
+                "heroClass": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "localTimezone": {
                     "type": "string"
                 },
                 "name": {
                     "type": "string"
                 },
-                "selected_dates": {
+                "slotsByDate": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "slug": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.CreateAvailabilityRequest": {
+            "type": "object",
+            "properties": {
+                "heroClass": {
+                    "type": "string"
+                },
+                "localTimezone": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "slotsByDate": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "models.CreateSessionRequest": {
+            "type": "object",
+            "required": [
+                "endTime",
+                "name",
+                "startTime",
+                "timeZone"
+            ],
+            "properties": {
+                "endTime": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "selectedDates": {
                     "type": "array",
                     "items": {
                         "type": "string"
                     }
                 },
-                "start_time": {
+                "startTime": {
                     "type": "string"
                 },
-                "time_zone": {
+                "timeZone": {
                     "type": "string"
                 }
             }
@@ -262,7 +367,7 @@ const docTemplate = `{
         "models.Session": {
             "type": "object",
             "properties": {
-                "end_time": {
+                "endTime": {
                     "type": "string"
                 },
                 "id": {
@@ -271,7 +376,7 @@ const docTemplate = `{
                 "name": {
                     "type": "string"
                 },
-                "selected_dates": {
+                "selectedDates": {
                     "type": "array",
                     "items": {
                         "type": "string"
@@ -280,10 +385,10 @@ const docTemplate = `{
                 "slug": {
                     "type": "string"
                 },
-                "start_time": {
+                "startTime": {
                     "type": "string"
                 },
-                "time_zone": {
+                "timeZone": {
                     "type": "string"
                 }
             }
@@ -291,10 +396,10 @@ const docTemplate = `{
         "models.UpdateSessionRequest": {
             "type": "object",
             "properties": {
-                "end_time": {
+                "endTime": {
                     "type": "string"
                 },
-                "start_time": {
+                "startTime": {
                     "type": "string"
                 }
             }
