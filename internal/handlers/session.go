@@ -37,20 +37,20 @@ func (handler *sessionHandler) Create(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, session)
+	c.JSON(http.StatusCreated, gin.H{"message": "Successfully created the session", "data": session})
 }
 
-// GetByID godoc
-// @Summary      Get a session by ID
+// GetBySlug godoc
+// @Summary      Get a session by Slug
 // @Tags         sessions
 // @Produce      json
-// @Param        id   path      string  true  "Session ID"
+// @Param        slug   path      string  true  "Session Slug"
 // @Success      200  {object}  models.Session
 // @Failure      404  {object}  map[string]string
 // @Failure      500  {object}  map[string]string
-// @Router       /sessions/{id} [get]
-func (handler *sessionHandler) GetByID(c *gin.Context) {
-	s, err := handler.service.GetByID(c.Request.Context(), c.Param("id"))
+// @Router       /sessions/{slug} [get]
+func (handler *sessionHandler) GetBySlug(c *gin.Context) {
+	s, err := handler.service.GetBySlug(c.Request.Context(), c.Param("slug"))
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			c.JSON(http.StatusNotFound, gin.H{"error": "session not found"})
@@ -60,7 +60,7 @@ func (handler *sessionHandler) GetByID(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, s)
+	c.JSON(http.StatusOK, gin.H{"message": "Successfully retrieved the session", "data": s})
 }
 
 // Update godoc

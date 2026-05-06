@@ -30,7 +30,7 @@ func RegisterRoutes(r *gin.Engine, sessionSvc *services.SessionService) {
 		sessions := v1.Group("/sessions")
 		{
 			sessions.POST("", sh.Create)
-			sessions.GET("/:id", sh.GetByID)
+			sessions.GET("/:slug", sh.GetBySlug)
 			sessions.PUT("/:id", sh.Update)
 			sessions.DELETE("/:id", sh.Delete)
 		}

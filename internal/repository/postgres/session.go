@@ -34,24 +34,24 @@ func (r *sessionRepo) Create(ctx context.Context, req models.CreateSessionReques
 
 	var s models.Session
 	err = r.db.QueryRow(ctx,
-		`INSERT INTO sessions (name, start_time, end_time, slug, time_zone)
-		 VALUES ($1, $2, $3, $4, $5)
-		 RETURNING id, name, start_time, end_time, slug, time_zone`,
-		req.Name, req.StartTime, req.EndTime, slug, req.TimeZone,
-	).Scan(&s.ID, &s.Name, &s.StartTime, &s.EndTime, &s.Slug, &s.TimeZone)
+		`INSERT INTO sessions (name, start_time, end_time, slug, time_zone,selected_dates)
+		 VALUES ($1, $2, $3, $4, $5, $6)
+		 RETURNING id, name, start_time, end_time, slug, time_zone, selected_dates`,
+		req.Name, req.StartTime, req.EndTime, slug, req.TimeZone, req.SelectedDates,
+	).Scan(&s.ID, &s.Name, &s.StartTime, &s.EndTime, &s.Slug, &s.TimeZone, &s.SelectedDates)
 	if err != nil {
 		return nil, fmt.Errorf("create session: %w", err)
 	}
 	return &s, nil
 }
 
-func (r *sessionRepo) GetByID(ctx context.Context, id string) (*models.Session, error) {
+func (r *sessionRepo) GetBySlug(ctx context.Context, slug string) (*models.Session, error) {
 	var s models.Session
 	err := r.db.QueryRow(ctx,
-		`SELECT id, name, start_time, end_time, slug, time_zone
-		 FROM sessions WHERE id = $1`,
-		id,
-	).Scan(&s.ID, &s.Name, &s.StartTime, &s.EndTime, &s.Slug, &s.TimeZone)
+		`SELECT id, name, start_time, end_time, slug, time_zone, selected_dates
+		 FROM sessions WHERE slug = $1`,
+		slug,
+	).Scan(&s.ID, &s.Name, &s.StartTime, &s.EndTime, &s.Slug, &s.TimeZone, &s.SelectedDates)
 	if err != nil {
 		return nil, fmt.Errorf("get session: %w", err)
 	}

@@ -19,8 +19,8 @@ func (service *SessionService) Create(ctx context.Context, req models.CreateSess
 	return service.repo.Create(ctx, req)
 }
 
-func (service *SessionService) GetByID(ctx context.Context, id string) (*models.Session, error) {
-	return service.repo.GetByID(ctx, id)
+func (service *SessionService) GetBySlug(ctx context.Context, id string) (*models.Session, error) {
+	return service.repo.GetBySlug(ctx, id)
 }
 
 func (service *SessionService) Update(ctx context.Context, id string, req models.UpdateSessionRequest) (*models.Session, error) {
