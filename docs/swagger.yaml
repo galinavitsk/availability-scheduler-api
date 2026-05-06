@@ -1,0 +1,195 @@
+basePath: /api/v1
+definitions:
+  models.CreateSessionRequest:
+    properties:
+      end_time:
+        type: string
+      name:
+        type: string
+      selected_dates:
+        items:
+          type: string
+        type: array
+      start_time:
+        type: string
+      time_zone:
+        type: string
+    required:
+    - end_time
+    - name
+    - start_time
+    - time_zone
+    type: object
+  models.Session:
+    properties:
+      end_time:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      selected_dates:
+        items:
+          type: string
+        type: array
+      slug:
+        type: string
+      start_time:
+        type: string
+      time_zone:
+        type: string
+    type: object
+  models.UpdateSessionRequest:
+    properties:
+      end_time:
+        type: string
+      start_time:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: API for managing scheduling sessions.
+  title: Availability Scheduler API
+  version: "1.0"
+paths:
+  /health:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Health check
+      tags:
+      - health
+  /sessions:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Session to create
+        in: body
+        name: session
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateSessionRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Session'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create a session
+      tags:
+      - sessions
+  /sessions/{id}:
+    delete:
+      parameters:
+      - description: Session ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "204":
+          description: No Content
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete a session
+      tags:
+      - sessions
+    get:
+      parameters:
+      - description: Session ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Session'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get a session by ID
+      tags:
+      - sessions
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Session ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Fields to update
+        in: body
+        name: session
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateSessionRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Session'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update a session
+      tags:
+      - sessions
+swagger: "2.0"
