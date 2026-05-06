@@ -13,7 +13,7 @@ import (
 
 func RegisterRoutes(r *gin.Engine, sessionSvc *services.SessionService, availabilitySvc *services.AvailabilityService) {
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:3005"},
+		AllowOrigins:     []string{"http://localhost:3005", "http://localhost:3000", "https://quest-scheduler.vercel.app"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
 		ExposeHeaders:    []string{"Content-Length"},
